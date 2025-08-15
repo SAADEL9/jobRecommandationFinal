@@ -1,8 +1,11 @@
 package com.saad.jobRec.configs;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -15,10 +18,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfigurationSource;
-import java.util.List;
 import org.springframework.web.cors.CorsConfiguration;
-
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @EnableWebSecurity
@@ -37,8 +38,18 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll() // <-- Corrected path to match your AuthController
-                        .requestMatchers("/hello").authenticated()
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/offers", "/api/offers/**").permitAll()
+                        // Only recruiters can call secured recruiter endpoints, including delete
+                        .requestMatchers("/api/recruiter/**").hasRole("RECRUITER")
+                        // keep specific public endpoint for detail POST
+                        .requestMatchers(HttpMethod.POST, "/api/offers/detail").permitAll()
+                        // Applications: restrict per route
+                        .requestMatchers(HttpMethod.POST, "/api/applications/apply").hasRole("CANDIDAT")
+                        .requestMatchers(HttpMethod.GET, "/api/applications/by-recruiter/**").hasRole("RECRUITER")
+                        .requestMatchers(HttpMethod.GET, "/api/applications/by-candidat/**").hasRole("CANDIDAT")
+                        .requestMatchers("/api/user/me").authenticated()
+                        .requestMatchers("/api/candidat/**").hasRole("CANDIDAT")
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)

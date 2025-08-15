@@ -18,12 +18,17 @@ public class JobRecApplication {
 	@Bean
 	CommandLineRunner initRoles(RoleRepository roleRepository) {
 		return args -> {
-			if (!roleRepository.existsByName(ERole.ROLE_USER)) {
-				roleRepository.save(new Role(null, ERole.ROLE_USER));
-			}
 			if (!roleRepository.existsByName(ERole.ROLE_ADMIN)) {
 				roleRepository.save(new Role(null, ERole.ROLE_ADMIN));
 			}
+			if (!roleRepository.existsByName(ERole.ROLE_RECRUITER)) {
+				roleRepository.save(new Role(null, ERole.ROLE_RECRUITER));
+			}
+			if (!roleRepository.existsByName(ERole.ROLE_CANDIDAT)) {
+				roleRepository.save(new Role(null, ERole.ROLE_CANDIDAT));
+			}
 		};
 	}
+
+
 }
