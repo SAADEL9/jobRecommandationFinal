@@ -19,7 +19,7 @@ import com.saad.jobRec.services.ApplicationService;
 
 @RestController
 @RequestMapping("/api/applications")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000"})
 public class ApplicationController {
 
     @Autowired
@@ -47,6 +47,7 @@ public class ApplicationController {
         return ResponseEntity.ok(applicationService.getApplicationsForCandidat(candidatId));
     }
     @PutMapping("/{applicationId}/status")
+    @PreAuthorize("hasRole('RECRUITER')")
     public ResponseEntity<Application> updateStatus(
             @PathVariable Long applicationId,
             @RequestParam String newStatus) {

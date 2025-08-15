@@ -24,7 +24,7 @@ import com.saad.jobRec.services.CandidateService;
 
 @RestController
 @RequestMapping("/api/candidat")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000"})
 public class CandidatController {
     @Value("${file.upload-dir}")
     private String uploadDir;
