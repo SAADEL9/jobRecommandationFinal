@@ -17,7 +17,7 @@ import com.saad.jobRec.repositories.UserRepository;
 
 @RestController
 @RequestMapping("/api/user")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000"})
 public class UserController {
     @Autowired
     private UserRepository userRepository;
